@@ -83,7 +83,7 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
       if (TickPriority < (1UL << __NVIC_PRIO_BITS))
       {
         /* Enable the TIM7 global Interrupt */
-        HAL_NVIC_SetPriority(TIM7_IRQn, 0, 0U);
+        HAL_NVIC_SetPriority(TIM7_IRQn, TickPriority, 0U);
         uwTickPrio = TickPriority;
       }
       else

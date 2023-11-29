@@ -48,7 +48,6 @@ ADC_HandleTypeDef hadc1;
 CRC_HandleTypeDef hcrc;
 
 SPI_HandleTypeDef hspi1;
-DMA_HandleTypeDef handle_GPDMA1_Channel0;
 
 TIM_HandleTypeDef htim15;
 
@@ -65,9 +64,7 @@ void SystemClock_Config(void);
 static void SystemPower_Config(void);
 void MX_FREERTOS_Init(void);
 static void MX_GPIO_Init(void);
-static void MX_GPDMA1_Init(void);
 static void MX_ADC1_Init(void);
-static void MX_ICACHE_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_UCPD1_Init(void);
 static void MX_USART1_UART_Init(void);
@@ -114,9 +111,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_GPDMA1_Init();
   MX_ADC1_Init();
-  MX_ICACHE_Init();
   MX_SPI1_Init();
   MX_UCPD1_Init();
   MX_USART1_UART_Init();
@@ -136,7 +131,6 @@ int main(void)
 
   /* Call init function for freertos objects (in freertos.c) */
   MX_FREERTOS_Init();
-
 
   /* Start scheduler */
   osKernelStart();
@@ -199,7 +193,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB3CLKDivider = RCC_HCLK_DIV1;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
@@ -318,84 +312,6 @@ static void MX_CRC_Init(void)
 }
 
 /**
-  * @brief GPDMA1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_GPDMA1_Init(void)
-{
-
-  /* USER CODE BEGIN GPDMA1_Init 0 */
-
-  /* USER CODE END GPDMA1_Init 0 */
-
-  /* Peripheral clock enable */
-  __HAL_RCC_GPDMA1_CLK_ENABLE();
-
-  /* GPDMA1 interrupt Init */
-    HAL_NVIC_SetPriority(GPDMA1_Channel0_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(GPDMA1_Channel0_IRQn);
-
-  /* USER CODE BEGIN GPDMA1_Init 1 */
-
-  /* USER CODE END GPDMA1_Init 1 */
-  /* USER CODE BEGIN GPDMA1_Init 2 */
-
-  /* USER CODE END GPDMA1_Init 2 */
-
-}
-
-/**
-  * @brief ICACHE Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_ICACHE_Init(void)
-{
-
-  /* USER CODE BEGIN ICACHE_Init 0 */
-
-  /* USER CODE END ICACHE_Init 0 */
-
-  ICACHE_RegionConfigTypeDef pRegionConfig = {0};
-
-  /* USER CODE BEGIN ICACHE_Init 1 */
-
-  /* USER CODE END ICACHE_Init 1 */
-
-  /** Configure and enable a region for memory remapping.
-  */
-  if (HAL_ICACHE_Disable() != HAL_OK)
-  {
-    Error_Handler();
-  }
-  pRegionConfig.BaseAddress = 0x10000000;
-  pRegionConfig.RemapAddress = 0x60000000;
-  pRegionConfig.Size = ICACHE_REGIONSIZE_2MB;
-  pRegionConfig.TrafficRoute = ICACHE_MASTER1_PORT;
-  pRegionConfig.OutputBurstType = ICACHE_OUTPUT_BURST_WRAP;
-  if (HAL_ICACHE_EnableRemapRegion(_NULL, &pRegionConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Enable instruction cache in 1-way (direct mapped cache)
-  */
-  if (HAL_ICACHE_ConfigAssociativityMode(ICACHE_1WAY) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_ICACHE_Enable() != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN ICACHE_Init 2 */
-
-  /* USER CODE END ICACHE_Init 2 */
-
-}
-
-/**
   * @brief SPI1 Initialization Function
   * @param None
   * @retval None
@@ -416,7 +332,7 @@ static void MX_SPI1_Init(void)
   hspi1.Instance = SPI1;
   hspi1.Init.Mode = SPI_MODE_MASTER;
   hspi1.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi1.Init.DataSize = SPI_DATASIZE_4BIT;
+  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
