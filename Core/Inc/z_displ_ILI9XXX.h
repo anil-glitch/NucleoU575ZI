@@ -76,8 +76,8 @@
  **** (Setup the same configuration on CubeMX) *****
  ***************************************************/
 //#define DISPLAY_SPI_POLLING_MODE
-#define DISPLAY_SPI_INTERRUPT_MODE
-//#define DISPLAY_SPI_DMA_MODE // (mixed: polling/DMA, see below)
+//#define DISPLAY_SPI_INTERRUPT_MODE
+#define DISPLAY_SPI_DMA_MODE // (mixed: polling/DMA, see below)
 
 
 /*****************     STEP 6      *****************

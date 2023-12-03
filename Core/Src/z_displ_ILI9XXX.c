@@ -107,7 +107,18 @@ void Displ_Transmit(GPIO_PinState DC_Status, uint8_t* data, uint16_t dataSize, u
 
 #ifdef DISPLAY_SPI_INTERRUPT_MODE
 		Displ_SpiAvailable=0;
+		if (dataSize<DISPL_DMA_CUTOFF) {
+			HAL_SPI_Transmit(&DISPL_SPI_PORT , data, dataSize, HAL_MAX_DELAY);
+			Displ_SpiAvailable=1;
+#ifdef DISPLAY_USING_TOUCHGFX
+			if (isTouchGFXBuffer){
+				DisplayDriver_TransferCompleteCallback();
+			}
+#endif //DISPLAY_USING_TOUCHGFX
+		}
+		else{
 		HAL_SPI_Transmit_IT(&DISPL_SPI_PORT , data, dataSize);
+		}
 #else
 #ifdef DISPLAY_SPI_DMA_MODE
 		if (dataSize<DISPL_DMA_CUTOFF) {

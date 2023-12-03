@@ -43,13 +43,14 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "linked_list.h"
 #include "z_displ_ILI9XXX.h"
 #include "z_touch_XPT2046.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+extern DMA_QListTypeDef Queue_tx;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
